@@ -554,3 +554,18 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 90; pointer-event
 @media (prefers-reduced-motion: reduce) { .xp__body .art { opacity: 1; transform: none; } }
 .pole__title { font-size: clamp(34px, 9.6vw, 136px); overflow-wrap: normal; }
 .pole__title.is-long { font-size: clamp(32px, 8vw, 118px); }
+
+/* =====================================================================
+   VERSION 4 — pages séparées (référencement)
+   ===================================================================== */
+.view { display: block; }
+section[id] { scroll-margin-top: 70px; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 200; background: var(--ink); color: var(--white); padding: 10px 16px; border-radius: 8px; transition: top .3s; }
+.skip:focus { top: 12px; }
+.hero h1 { margin-top: 0; }
+.hero h1 .eyebrow { display: flex; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; letter-spacing: .22em; line-height: 1.6; margin-bottom: 26px; }
+.hero h1 .line:nth-child(2) > span { animation-delay: .85s; }
+.hero h1 .line:nth-child(3) > span { animation-delay: 1s; }
+.hero h1 .line:nth-child(4) > span { animation-delay: 1.15s; }
+.pole__zone { color: var(--muted); max-width: 44ch; margin: -14px 0 30px; font-size: 16px; }
+.hero__lead { max-width: 40ch; }

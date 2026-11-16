@@ -12,91 +12,10 @@ const CONFIG = {
   duration: "30 minutes"
 };
 
-document.documentElement.classList.add("js");
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-/* ---------- Visuels de livrables (construits en HTML, sans image externe) ---------- */
-const LOGO = "assets/logo-omnelyo.webp";
-const ART = {
-  brand: `<div class="art__in ab">
-    <div class="t ab-logo" style="--k:0"><img src="${LOGO}" alt=""></div>
-    <div class="t ab-type" style="--k:1"><b>Aa</b><span>Syne Bold<br>Hanken Grotesk</span></div>
-    <div class="t ab-pal" style="--k:2"><i style="--c:#A2185B"><em>A2185B</em></i><i style="--c:#312783"><em>312783</em></i><i style="--c:#1B1647"><em>1B1647</em></i><i style="--c:#F1EFF9;--f:#1B1647"><em>F1EFF9</em></i></div>
-    <div class="t ab-card" style="--k:3"><img src="${LOGO}" alt=""><span>Communication · Digital · IA</span></div>
-  </div>`,
-  social: `<div class="art__in as">
-    <div class="as-phone"><div class="as-bar"></div><div class="as-grid">${"<i></i>".repeat(9)}</div></div>
-    <div class="as-edit">
-      <div class="as-screen"><span class="as-play"></span></div>
-      <div class="as-tracks"><i></i><i></i><i></i><b class="as-head"></b></div>
-    </div>
-  </div>`,
-  ia: `<div class="art__in ai">
-    <div class="ai-prompt"><span>Votre brief</span><p>Trois pistes de slogan pour une boulangerie artisanale<i class="caret"></i></p></div>
-    <svg class="ai-wires" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><path d="M200 96C200 130 90 126 90 160"/><path d="M200 96V160"/><path d="M200 96C200 130 310 126 310 160"/><path d="M90 200C90 236 200 222 200 250"/><path d="M200 200V250"/><path d="M310 200C310 236 200 222 200 250"/></svg>
-    <div class="ai-ideas"><i>Piste 1</i><i>Piste 2</i><i>Piste 3</i></div>
-    <div class="ai-human">Relecture et choix humains</div>
-  </div>`
-};
-document.querySelectorAll("[data-art]").forEach(el => (el.innerHTML = ART[el.dataset.art]));
-
-/* ---------- Pages des trois pôles ---------- */
-const POLES = [
-  { slug: "communication", num: "01", title: "Communication", art: "brand", cta: "Un projet de communication ?",
-    intro: "Avant de produire, on clarifie : à qui vous parlez, ce que vous avez à dire et ce qui vous distingue. Le reste en découle, du logo à la plaquette.",
-    items: [
-      ["Conseil et stratégie de communication", "Un état des lieux de votre communication, puis un plan clair : <b>cibles, messages, canaux et priorités</b>. Vous savez quoi faire, dans quel ordre et pourquoi."],
-      ["Création d'identités visuelles", "<b>Logo, palette, typographies et règles d'usage</b>, réunis dans une charte graphique. Une image cohérente et reconnaissable sur tous vos supports."],
-      ["Création de supports de communication", "Plaquettes, flyers, affiches, cartes de visite, présentations : des supports <b>imprimés ou numériques</b>, livrés prêts à diffuser."],
-      ["Accompagnement des entreprises", "Un regard extérieur dans la durée : <b>points réguliers, conseils et ajustements</b> pour garder le cap quand votre activité évolue."]
-    ] },
-  { slug: "digital", num: "02", title: "Digital", art: "social", cta: "Un projet digital ?",
-    intro: "Vos clients vous découvrent d'abord en ligne. Nous faisons en sorte que ce premier contact donne envie, sur vos réseaux comme sur votre site.",
-    items: [
-      ["Gestion et animation des réseaux sociaux", "<b>Ligne éditoriale, calendrier, création des publications et animation</b> de votre communauté, sur les réseaux utiles à votre activité."],
-      ["Création de contenus visuels et audiovisuels", "Visuels, photos mises en forme, vidéos courtes : des contenus <b>pensés pour chaque format</b> et fidèles à votre identité."],
-      ["Montage vidéo", "Vos images montées, rythmées, sous-titrées et <b>déclinées aux formats</b> des réseaux, de votre site ou de vos événements."],
-      ["Création de sites internet", "Un site <b>clair, rapide et adapté au mobile</b>, que vous pouvez faire évoluer. De la maquette à la mise en ligne."]
-    ] },
-  { slug: "ia", num: "03", title: "Intelligence artificielle", art: "ia", cta: "Envie d'y voir clair sur l'IA ?", long: true,
-    intro: "L'IA fait gagner du temps quand on sait quoi lui demander. Nous vous aidons à l'utiliser à bon escient, sans jargon et en gardant la main sur le résultat.",
-    items: [
-      ["Accompagnement à l'utilisation des outils IA", "Nous choisissons avec vous <b>les outils adaptés à vos tâches</b>, puis nous les prenons en main ensemble sur vos cas concrets."],
-      ["Formation et conseil", "Des sessions <b>pratiques, adaptées au niveau de vos équipes</b> : bonnes pratiques, limites à connaître, confidentialité."],
-      ["Optimisation des méthodes de travail", "Nous repérons les tâches répétitives et proposons <b>des façons de faire plus simples</b>, avec ou sans IA."],
-      ["Intégration de l'IA dans vos processus de communication", "Idées, premières versions, déclinaisons : l'IA <b>accélère la production</b>, la relecture et les choix restent humains."]
-    ] }
-];
-const ARROW = '<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>';
-document.getElementById("main").insertAdjacentHTML("beforeend", POLES.map(p => `
-<div class="view" data-view="${p.slug}">
-  <section class="page pole">
-    <div class="wrap">
-      <a class="back" href="#expertises">Toutes les expertises</a>
-      <p class="eyebrow">Pôle ${p.num}</p>
-      <h1 class="pole__title${p.long ? " is-long" : ""}">${p.title}</h1>
-      <div class="pole__top">
-        <div><p class="pole__intro">${p.intro}</p><a class="btn" href="#rendez-vous">Prendre rendez-vous ${ARROW}</a></div>
-        <div class="pole__stage"><div class="art">${ART[p.art]}</div></div>
-      </div>
-      <div class="faq__grid pole__list">
-        <div><p class="eyebrow">Prestations</p><h2 class="match__lead">Ce que nous faisons pour vous.</h2></div>
-        <div class="xp faq" data-acc="any">${p.items.map(([t, d], i) => `
-          <div class="xp__item${i === 0 ? " is-open" : ""}">
-            <h3><button class="xp__head" type="button" aria-expanded="${i === 0}"><span class="xp__title">${t}</span><span class="xp__sign"></span></button></h3>
-            <div class="xp__panel"><div><p class="faq__text">${d}</p></div></div>
-          </div>`).join("")}
-        </div>
-      </div>
-      <div class="pole__cta"><h2>${p.cta}</h2><a class="btn btn--light" href="#rendez-vous">Choisir un créneau ${ARROW}</a></div>
-      <p class="eyebrow">Les autres pôles</p>
-      <div class="pole__next">${POLES.filter(o => o !== p).map(o => `<a href="#${o.slug}"><small>${o.num}</small><span>${o.title}</span>${ARROW}</a>`).join("")}</div>
-    </div>
-  </section>
-</div>`).join(""));
 
 /* ---------- Valeurs de configuration dans la page ---------- */
 $$("[data-cfg='email']").forEach(el => {
@@ -105,25 +24,6 @@ $$("[data-cfg='email']").forEach(el => {
 });
 $$("[data-cfg='duration']").forEach(el => (el.textContent = CONFIG.duration));
 $$("[data-year]").forEach(el => (el.textContent = new Date().getFullYear()));
-
-/* ---------- Routage par ancre ---------- */
-const views = $$(".view");
-const viewNames = views.map(v => v.dataset.view);
-function route(first) {
-  const hash = decodeURIComponent(location.hash.slice(1));
-  const name = viewNames.includes(hash) ? hash : "accueil";
-  views.forEach(v => v.classList.toggle("is-current", v.dataset.view === name));
-  $$("[data-nav]").forEach(a => a.classList.toggle("is-active", a.getAttribute("href") === "#" + name));
-  closeMenu();
-  if (name !== "accueil" || !hash || hash === "accueil") {
-    if (!first) window.scrollTo(0, 0);
-  } else {
-    const target = document.getElementById(hash);
-    if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: first || reduced ? "auto" : "smooth" }));
-  }
-  onScroll();
-}
-addEventListener("hashchange", () => route(false));
 
 /* ---------- Menu mobile ---------- */
 const burger = $(".burger"), nav = $(".nav");
@@ -188,7 +88,6 @@ if (quote) {
     words.forEach((w, i) => w.classList.toggle("on", i < n));
   };
   addEventListener("scroll", light, { passive: true });
-  addEventListener("hashchange", light);
   light();
 }
 
@@ -273,7 +172,6 @@ if (finePointer && !reduced) {
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(es => setRunning(es[0].isIntersecting)).observe(canvas);
   } else setRunning(true);
-  addEventListener("hashchange", () => requestAnimationFrame(() => { resize(); }));
 })();
 
 /* ---------- Prise de rendez-vous ---------- */
@@ -475,4 +373,4 @@ if (finePointer && !reduced) {
   });
 }
 
-route(true);
+onScroll();
