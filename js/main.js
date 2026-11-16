@@ -2,10 +2,11 @@
    ------------------------------------------------------------------
    À PERSONNALISER : tout ce qui dépend de votre activité est ici. */
 const CONFIG = {
-  email: "contact@omnelyo.fr",        // adresse qui reçoit les demandes de rendez-vous
-  // Pour recevoir les demandes sans passer par la messagerie du visiteur,
-  // collez ici l'adresse d'un service de formulaire (ex. Formspree) :
-  formEndpoint: "",
+  email: "hugo.seiler23@gmail.com",   // adresse affichée sur le site et utilisée en secours
+  // Les demandes sont envoyées par FormSubmit (formsubmit.co) vers cette boîte.
+  // Après activation, FormSubmit fournit un identifiant aléatoire : remplacez
+  // l'adresse e-mail ci-dessous par cet identifiant pour la masquer dans le code.
+  formEndpoint: "https://formsubmit.co/ajax/hugo.seiler23@gmail.com",
   slots: ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"],
   daysAhead: 15,                       // nombre de jours ouvrés proposés
   duration: "30 minutes"
@@ -366,16 +367,24 @@ if (finePointer && !reduced) {
     ];
     const text = lines.join("\n");
     let sent = false;
+    const btn = form.querySelector("button[type=submit]"); btn.disabled = true; btn.style.opacity = ".6";
     if (CONFIG.formEndpoint) {
       try {
-        const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ message: text, email: val("email"), _subject: "Demande de rendez-vous — " + val("nom") }) });
-        sent = r.ok;
+        const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({
+          _subject: "Demande de rendez-vous — " + val("nom"), _template: "table", _captcha: "false", _replyto: val("email"),
+          Sujet: val("besoin"), Format: val("format"), "Créneau souhaité": state.day + " à " + state.slot,
+          Nom: val("nom"), Entreprise: val("entreprise") || "non précisée", email: val("email"),
+          "Téléphone": val("telephone") || "non précisé", Projet: val("message") || "à préciser lors de l'échange"
+        }) });
+        const data = await r.json().catch(() => ({}));
+        sent = r.ok && String(data.success) === "true";
       } catch (_) { sent = false; }
     }
+    btn.disabled = false; btn.style.opacity = "";
     $("#done-title").textContent = sent ? "Votre demande est envoyée." : "Votre demande est prête.";
     $("#done-text").textContent = sent
-      ? "Vous recevrez une confirmation du créneau par e-mail."
-      : "Envoyez-la depuis votre messagerie pour la transmettre. Le créneau vous sera confirmé par e-mail.";
+      ? "Nous l'avons bien reçue. Le créneau vous sera confirmé par e-mail."
+      : "L'envoi automatique n'a pas abouti. Envoyez-la depuis votre messagerie, ou copiez-la et écrivez-nous à l'adresse ci-dessous.";
     $("#done-body").textContent = text;
     $("#done-mail").href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Demande de rendez-vous — " + val("nom"))}&body=${encodeURIComponent(text)}`;
     $("#done-mail").hidden = sent;
